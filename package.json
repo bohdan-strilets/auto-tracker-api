@@ -17,12 +17,6 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "prepare": "husky"
   },
-  "lint-staged": {
-    "*.ts": [
-      "eslint --fix",
-      "prettier --write"
-    ]
-  },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
