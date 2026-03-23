@@ -211,6 +211,23 @@ enum EntityType {
   RECEIPT_IMAGE
 }
 
+// Session enums
+
+enum SessionStatus {
+  ACTIVE
+  INACTIVE
+  EXPIRED
+  REVOKED
+}
+
+enum DeviceType {
+  DESKTOP
+  MOBILE
+  TABLET
+  WEB
+  OTHER
+}
+
 // User
 
 model User {
@@ -240,6 +257,7 @@ model User {
   deletedAt               DateTime?
   createdAt               DateTime                 @default(now())
   updatedAt               DateTime                 @updatedAt
+  sessions                Session[]
 }
 
 model UserSettings {
@@ -340,6 +358,29 @@ model FavoriteStation {
   createdAt        DateTime       @default(now())
 
   @@unique([userId, serviceStationId])
+}
+
+// Session
+
+model Session {
+  id               String        @id @default(uuid())
+  userId           String
+  user             User          @relation(fields: [userId], references: [id])
+  refreshTokenHash String
+  status           SessionStatus @default(ACTIVE)
+  deviceType       DeviceType
+  deviceName       String?
+  deviceOS         String?
+  deviceBrowser    String?
+  ipAddress        String
+  userAgent        String
+  country          String?
+  city             String?
+  lastActivityAt   DateTime      @default(now())
+  expiresAt        DateTime
+  revokedAt        DateTime?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
 }
 
 // Workspace
