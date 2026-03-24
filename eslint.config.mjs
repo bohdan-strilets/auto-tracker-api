@@ -1,34 +1,53 @@
 import eslint from '@eslint/js';
+import { defineConfig } from 'eslint/config';
 import prettier from 'eslint-config-prettier';
 import importPlugin from 'eslint-plugin-import';
 import unusedImports from 'eslint-plugin-unused-imports';
+import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
-export default tseslint.config(
+export default defineConfig([
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
+  ...tseslint.configs.strictTypeChecked,
   prettier,
+
   {
-    plugins: {
-      import: importPlugin,
-      'unused-imports': unusedImports,
-    },
+    files: ['**/*.ts'],
     languageOptions: {
       parserOptions: {
         project: true,
         tsconfigRootDir: import.meta.dirname,
       },
+      globals: {
+        ...globals.node,
+      },
     },
+
+    plugins: {
+      import: importPlugin,
+      'unused-imports': unusedImports,
+    },
+
     rules: {
-      // --- unused imports ---
-      '@typescript-eslint/no-unused-vars': 'off', // вимикаємо, бо unused-imports замінює
+      '@typescript-eslint/no-unsafe-assignment': 'error',
+      '@typescript-eslint/no-unsafe-return': 'error',
+      '@typescript-eslint/no-unsafe-call': 'warn',
+      '@typescript-eslint/no-unsafe-member-access': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/restrict-template-expressions': 'off',
       'unused-imports/no-unused-imports': 'error',
       'unused-imports/no-unused-vars': [
         'warn',
-        { vars: 'all', varsIgnorePattern: '^_', args: 'after-used', argsIgnorePattern: '^_' },
+        {
+          vars: 'all',
+          varsIgnorePattern: '^_',
+          args: 'after-used',
+          argsIgnorePattern: '^_',
+        },
       ],
 
-      // --- сортування імпортів ---
       'import/order': [
         'error',
         {
@@ -46,7 +65,33 @@ export default tseslint.config(
       ],
     },
   },
+
+  {
+    files: ['**/*.spec.ts', '**/*.test.ts'],
+    rules: {
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+    },
+  },
+
+  {
+    files: ['**/crypto.service.ts', '**/auth/**'],
+    rules: {
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+    },
+  },
+
+  {
+    files: ['**/*.module.ts'],
+    rules: {
+      '@typescript-eslint/no-extraneous-class': 'off',
+    },
+  },
+
   {
     ignores: ['dist/**', 'node_modules/**'],
   },
-);
+]);
