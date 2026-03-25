@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '@db/prisma.service';
-import { Prisma, User } from '@prisma/client';
+import { Prisma, User, UserStatus } from '@prisma/client';
 
 import { CreateUserInput } from '../types';
 
@@ -29,5 +29,39 @@ export class UserRepository {
   async createUser(input: CreateUserInput, tx?: Prisma.TransactionClient): Promise<User> {
     const client = tx ?? this.prisma;
     return client.user.create({ data: input });
+  }
+
+  async updateLastLogin(userId: string, tx?: Prisma.TransactionClient): Promise<void> {
+    const client = tx ?? this.prisma;
+    const now = new Date();
+
+    await client.user.update({
+      where: { id: userId },
+      data: { lastLoginAt: now, loginCount: { increment: 1 } },
+    });
+  }
+
+  async markEmailAsVerified(userId: string, tx?: Prisma.TransactionClient): Promise<void> {
+    const client = tx ?? this.prisma;
+    const now = new Date();
+
+    await client.user.update({
+      where: { id: userId },
+      data: { emailVerified: true, emailVerifiedAt: now },
+    });
+  }
+
+  async updateEmail(userId: string, email: string, tx?: Prisma.TransactionClient): Promise<void> {
+    const client = tx ?? this.prisma;
+    await client.user.update({ where: { id: userId }, data: { email } });
+  }
+
+  async updateStatus(
+    userId: string,
+    status: UserStatus,
+    tx?: Prisma.TransactionClient,
+  ): Promise<void> {
+    const client = tx ?? this.prisma;
+    await client.user.update({ where: { id: userId }, data: { status } });
   }
 }

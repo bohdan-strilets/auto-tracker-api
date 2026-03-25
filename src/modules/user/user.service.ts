@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '@db/prisma.service';
-import { User, UserSettings } from '@prisma/client';
+import { User, UserSettings, UserStatus } from '@prisma/client';
 
 import { normalizeEmail } from '@common/email';
 import { UserNotFoundException } from '@common/exceptions';
@@ -55,6 +55,23 @@ export class UserService {
       await this.userSettingsRepository.create(user.id, tx);
       return user;
     });
+  }
+
+  async handleSuccessfulLogin(userId: string): Promise<void> {
+    await this.userRepository.updateLastLogin(userId);
+  }
+
+  async markEmailAsVerified(userId: string): Promise<void> {
+    await this.userRepository.markEmailAsVerified(userId);
+  }
+
+  async updateEmail(userId: string, newEmail: string): Promise<void> {
+    const normalizedEmail = normalizeEmail(newEmail);
+    await this.userRepository.updateEmail(userId, normalizedEmail);
+  }
+
+  async updateStatus(userId: string, status: UserStatus): Promise<void> {
+    await this.userRepository.updateStatus(userId, status);
   }
 
   async getSettings(userId: string): Promise<UserSettings | null> {
