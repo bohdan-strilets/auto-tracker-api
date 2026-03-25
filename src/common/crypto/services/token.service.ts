@@ -25,6 +25,10 @@ export class TokenService {
     return { rawToken, tokenHash, expiresAt };
   }
 
+  hash(rawToken: string): string {
+    return this.crypto.hashSha256(rawToken);
+  }
+
   isExpired(expiresAt: Date): boolean {
     const now = new Date();
     return now > expiresAt;
