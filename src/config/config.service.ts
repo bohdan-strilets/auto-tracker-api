@@ -37,4 +37,23 @@ export class ConfigService {
   get argon2Pepper(): string {
     return this.env.ARGON2_PEPPER;
   }
+
+  // Authentication
+  get authMaxFailedAttempts(): number {
+    return this.env.AUTH_MAX_FAILED_ATTEMPTS;
+  }
+  get authLockDurationMinutes(): number {
+    return this.env.AUTH_LOCK_DURATION_MINUTES;
+  }
+
+  // Email Tokens
+  get tokenEmailVerifyExpiresMinutes(): number {
+    return this.env.TOKEN_EMAIL_VERIFY_EXPIRES_MINUTES;
+  }
+  get tokenEmailChangeExpiresMinutes(): number {
+    return this.env.TOKEN_EMAIL_CHANGE_EXPIRES_MINUTES;
+  }
+  get tokenPasswordResetExpiresMinutes(): number {
+    return this.env.TOKEN_PASSWORD_RESET_EXPIRES_MINUTES;
+  }
 }
