@@ -26,4 +26,9 @@ export const envSchema = z.object({
   RESEND_API_KEY: z.string().min(30),
   MAIL_FROM_EMAIL: z.email(),
   APP_URL: z.url(),
+
+  THROTTLE_DEFAULT_TTL: z.coerce.number().min(1).default(60000),
+  THROTTLE_DEFAULT_LIMIT: z.coerce.number().min(1).default(100),
+  THROTTLE_AUTH_TTL: z.coerce.number().min(1).default(60000),
+  THROTTLE_AUTH_LIMIT: z.coerce.number().min(1).default(5),
 });

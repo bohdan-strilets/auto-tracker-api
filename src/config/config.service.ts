@@ -84,4 +84,18 @@ export class ConfigService {
   get appUrl(): string {
     return this.env.APP_URL;
   }
+
+  // Throttling
+  get throttleDefaultTtl(): number {
+    return this.env.THROTTLE_DEFAULT_TTL;
+  }
+  get throttleDefaultLimit(): number {
+    return this.env.THROTTLE_DEFAULT_LIMIT;
+  }
+  get throttleAuthTtl(): number {
+    return this.env.THROTTLE_AUTH_TTL;
+  }
+  get throttleAuthLimit(): number {
+    return this.env.THROTTLE_AUTH_LIMIT;
+  }
 }

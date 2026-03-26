@@ -1,4 +1,5 @@
 import { Body, Controller, HttpCode, HttpStatus, Post, Req, Res } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 
 import { Request, Response } from 'express';
 
@@ -20,6 +21,7 @@ import {
 } from './dto';
 import { RegisterDto } from './dto/register.dto';
 
+@Throttle({ auth: {} })
 @Controller('auth')
 export class AuthController {
   constructor(

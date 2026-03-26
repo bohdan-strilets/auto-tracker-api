@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 import { AuthModule } from '@modules/auth/auth.module';
 import { AuthCredentialsModule } from '@modules/auth-credentials/auth-credentials.module';
@@ -11,6 +13,7 @@ import { CookieModule } from '@common/cookie/cookie.module';
 import { CryptoModule } from '@common/crypto/crypto.module';
 import { DeviceModule } from '@common/device/device.module';
 import { MailModule } from '@common/mail/mail.module';
+import { ThrottlerConfigModule } from '@common/throttler/throttler.module';
 
 import { ConfigModule } from '@config/config.module';
 
@@ -32,6 +35,13 @@ import { UserModule } from './modules/user/user.module';
     DeviceModule,
     CookieModule,
     AuthGuardModule,
+    ThrottlerConfigModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class AppModule {}
