@@ -7,6 +7,7 @@ import { ConfigService } from '@config/config.service';
 
 import {
   AccountLockedTemplate,
+  EmailChangeNotificationTemplate,
   EmailChangeTemplate,
   PasswordChangedTemplate,
   ResetPasswordTemplate,
@@ -103,6 +104,15 @@ export class MailService {
     );
 
     await this.send(to, 'Your account has been locked', html);
+  }
+
+  async sendEmailChangeNotification(
+    to: string,
+    firstName: string,
+    newEmail: string,
+  ): Promise<void> {
+    const html = await render(EmailChangeNotificationTemplate({ firstName, newEmail }));
+    await this.send(to, 'Your email address is being changed', html);
   }
 
   // Helper methods

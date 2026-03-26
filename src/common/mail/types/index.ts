@@ -6,3 +6,4 @@ export { EmailChangeProps } from './email-change-props.type';
 export { WelcomeProps } from './welcome-props.type';
 export { PasswordChangedProps } from './password-changed-props.type';
 export { AccountLockedProps } from './account-locked-props.type';
+export { EmailChangeNotificationProps } from './email-change-notification-props.type';
