@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Logger,
 } from '@nestjs/common';
+import { ThrottlerException } from '@nestjs/throttler';
 
 import { Response } from 'express';
 
@@ -20,10 +21,19 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
+    if (exception instanceof ThrottlerException) {
+      const body: ErrorResponse = {
+        statusCode: HttpStatus.TOO_MANY_REQUESTS,
+        code: ERROR_CODES.generic.TOO_MANY_REQUESTS,
+        details: null,
+      };
+      response.status(HttpStatus.TOO_MANY_REQUESTS).json(body);
+      return;
+    }
+
     if (exception instanceof HttpException) {
       const status = exception.getStatus();
       const body = exception.getResponse() as ErrorResponse;
-
       response.status(status).json(body);
       return;
     }
