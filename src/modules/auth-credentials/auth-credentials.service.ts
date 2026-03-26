@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { AuthCredentials } from '@prisma/client';
+import { AuthCredentials, Prisma } from '@prisma/client';
 
 import { minutesToMs } from '@common/date';
 
@@ -15,8 +15,12 @@ export class AuthCredentialsService {
     private readonly config: ConfigService,
   ) {}
 
-  async create(userId: string, passwordHash: string): Promise<AuthCredentials> {
-    return this.repository.create(userId, passwordHash);
+  async create(
+    userId: string,
+    passwordHash: string,
+    tx?: Prisma.TransactionClient,
+  ): Promise<AuthCredentials> {
+    return this.repository.create(userId, passwordHash, tx);
   }
 
   async findByUserId(userId: string): Promise<AuthCredentials | null> {

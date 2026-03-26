@@ -1,16 +1,21 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '@db/prisma.service';
-import { AuthCredentials } from '@prisma/client';
+import { AuthCredentials, Prisma } from '@prisma/client';
 
 @Injectable()
 export class AuthCredentialsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(userId: string, passwordHash: string): Promise<AuthCredentials> {
+  async create(
+    userId: string,
+    passwordHash: string,
+    tx?: Prisma.TransactionClient,
+  ): Promise<AuthCredentials> {
+    const client = tx ?? this.prisma;
     const now = new Date();
 
-    return this.prisma.authCredentials.create({
+    return client.authCredentials.create({
       data: {
         userId,
         passwordHash,
