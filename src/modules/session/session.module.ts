@@ -9,6 +9,6 @@ import { SessionRepository } from './session.repository';
 @Module({
   imports: [JwtModule.register({}), UserModule],
   providers: [SessionRepository, JwtTokenService, SessionService],
-  exports: [SessionService],
+  exports: [SessionService, JwtTokenService],
 })
 export class SessionModule {}

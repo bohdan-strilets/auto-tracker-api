@@ -49,6 +49,14 @@ export class AuthController {
     return { user, accessToken };
   }
 
+  @Post('logout')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response): Promise<void> {
+    const refreshToken = this.cookieService.getRefreshToken(req);
+    if (refreshToken) await this.authService.logout(refreshToken);
+    this.cookieService.clearRefreshToken(res);
+  }
+
   @Post('resend-verification')
   @HttpCode(HttpStatus.NO_CONTENT)
   async resendVerification(@Body() dto: ResendVerificationDto): Promise<void> {

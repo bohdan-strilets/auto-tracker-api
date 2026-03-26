@@ -5,8 +5,9 @@ import { RegistrationSource, UserStatus } from '@prisma/client';
 
 import { AuthCredentialsService } from '@modules/auth-credentials/auth-credentials.service';
 import { EmailTokenService } from '@modules/email-token/email-token.service';
+import { JwtTokenService } from '@modules/session/services';
 import { SessionService } from '@modules/session/services/session.service';
-import { AccessTokenPayload } from '@modules/session/types';
+import { AccessTokenPayload, RefreshTokenPayload } from '@modules/session/types';
 import { CreateUserInput } from '@modules/user/types';
 import { toUserResponseDto } from '@modules/user/user.mapper';
 import { UserService } from '@modules/user/user.service';
@@ -35,6 +36,7 @@ export class AuthService {
     private readonly sessionService: SessionService,
     private readonly passwordService: PasswordService,
     private readonly mailService: MailService,
+    private readonly jwtTokenService: JwtTokenService,
   ) {}
 
   async register(dto: RegisterDto, deviceContext: DeviceContext): Promise<RegisterOutput> {
@@ -153,6 +155,18 @@ export class AuthService {
       refreshToken,
       refreshTokenExpiresAt: session.expiresAt,
     };
+  }
+
+  async logout(rawRefreshToken: string): Promise<void> {
+    let payload: RefreshTokenPayload;
+
+    try {
+      payload = this.jwtTokenService.verifyRefreshToken(rawRefreshToken);
+    } catch {
+      return;
+    }
+
+    await this.sessionService.revoke(payload.sid);
   }
 
   async resendVerificationEmail(email: string): Promise<void> {
