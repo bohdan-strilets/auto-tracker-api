@@ -2,13 +2,14 @@ import { Body, Controller, HttpCode, HttpStatus, Post, Req, Res } from '@nestjs/
 
 import { Request, Response } from 'express';
 
-import { Public } from '@common/auth/decorators';
+import { CurrentSessionId, CurrentUserId, Public } from '@common/auth/decorators';
 import { CookieService } from '@common/cookie/cookie.service';
 import { DeviceService } from '@common/device/device.service';
 
 import { AuthService } from './auth.service';
 import {
   AuthResponseDto,
+  ChangePasswordDto,
   ForgotPasswordDto,
   LoginDto,
   RefreshResponseDto,
@@ -121,5 +122,15 @@ export class AuthController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async resetPassword(@Body() dto: ResetPasswordDto): Promise<void> {
     await this.authService.resetPassword(dto.token, dto.password);
+  }
+
+  @Post('change-password')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async changePassword(
+    @Body() dto: ChangePasswordDto,
+    @CurrentUserId() userId: string,
+    @CurrentSessionId() sessionId: string,
+  ): Promise<void> {
+    await this.authService.changePassword(userId, dto.currentPassword, dto.newPassword, sessionId);
   }
 }

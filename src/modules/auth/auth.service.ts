@@ -242,4 +242,34 @@ export class AuthService {
       new Date().toISOString(),
     );
   }
+
+  async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string,
+    currentSessionId: string,
+  ): Promise<void> {
+    const credentials = await this.authCredentialsService.findByUserId(userId);
+    if (!credentials) throw new InvalidCredentialsException();
+
+    const isPasswordValid = await this.passwordService.verify(
+      credentials.passwordHash,
+      currentPassword,
+    );
+    if (!isPasswordValid) throw new InvalidCredentialsException();
+
+    if (!this.passwordService.isStrong(newPassword)) throw new WeakPasswordException();
+
+    const passwordHash = await this.passwordService.hash(newPassword);
+    await this.authCredentialsService.updatePassword(userId, passwordHash);
+
+    await this.sessionService.revokeAllExcept(userId, currentSessionId);
+
+    const user = await this.userService.getById(userId);
+    await this.mailService.sendPasswordChangedEmail(
+      user.email,
+      user.firstName,
+      new Date().toISOString(),
+    );
+  }
 }
