@@ -272,4 +272,32 @@ export class AuthService {
       new Date().toISOString(),
     );
   }
+
+  async changeEmail(userId: string, newEmail: string, password: string): Promise<void> {
+    const [credentials, user] = await Promise.all([
+      this.authCredentialsService.findByUserId(userId),
+      this.userService.getById(userId),
+    ]);
+
+    if (!credentials) throw new InvalidCredentialsException();
+
+    const isPasswordValid = await this.passwordService.verify(credentials.passwordHash, password);
+    if (!isPasswordValid) throw new InvalidCredentialsException();
+
+    const emailExists = await this.userService.emailExists(newEmail);
+    if (emailExists) throw new EmailAlreadyExistsException();
+
+    const { rawToken } = await this.emailTokenService.createEmailChangeToken(userId, newEmail);
+
+    await Promise.all([
+      this.mailService.sendEmailChangeNotification(user.email, user.firstName, newEmail),
+      this.mailService.sendEmailChangeEmail(newEmail, user.firstName, newEmail, rawToken),
+    ]);
+  }
+
+  async confirmEmailChange(rawToken: string): Promise<void> {
+    const token = await this.emailTokenService.useEmailChangeToken(rawToken);
+    await this.userService.updateEmail(token.userId, token.newEmail);
+    await this.sessionService.revokeAll(token.userId);
+  }
 }

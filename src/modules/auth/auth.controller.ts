@@ -9,6 +9,7 @@ import { DeviceService } from '@common/device/device.service';
 import { AuthService } from './auth.service';
 import {
   AuthResponseDto,
+  ChangeEmailDto,
   ChangePasswordDto,
   ForgotPasswordDto,
   LoginDto,
@@ -132,5 +133,18 @@ export class AuthController {
     @CurrentSessionId() sessionId: string,
   ): Promise<void> {
     await this.authService.changePassword(userId, dto.currentPassword, dto.newPassword, sessionId);
+  }
+
+  @Post('change-email')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async changeEmail(@Body() dto: ChangeEmailDto, @CurrentUserId() userId: string): Promise<void> {
+    await this.authService.changeEmail(userId, dto.newEmail, dto.password);
+  }
+
+  @Public()
+  @Post('confirm-email-change')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async confirmEmailChange(@Body() dto: VerifyEmailDto): Promise<void> {
+    await this.authService.confirmEmailChange(dto.token);
   }
 }
