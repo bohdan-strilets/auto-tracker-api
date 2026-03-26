@@ -18,6 +18,9 @@ export class ConfigService {
   get nodeEnv(): string {
     return this.env.NODE_ENV;
   }
+  get isProduction(): boolean {
+    return this.env.NODE_ENV === 'production';
+  }
 
   // Database
   get databaseUrl(): string {
