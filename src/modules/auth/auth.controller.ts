@@ -6,7 +6,7 @@ import { CookieService } from '@common/cookie/cookie.service';
 import { DeviceService } from '@common/device/device.service';
 
 import { AuthService } from './auth.service';
-import { AuthResponseDto, ResendVerificationDto } from './dto';
+import { AuthResponseDto, LoginDto, ResendVerificationDto } from './dto';
 import { RegisterDto } from './dto/register.dto';
 
 @Controller('auth')
@@ -26,6 +26,22 @@ export class AuthController {
   ): Promise<AuthResponseDto> {
     const deviceContext = this.deviceService.extractFromRequest(req);
     const response = await this.authService.register(dto, deviceContext);
+    const { accessToken, refreshToken, refreshTokenExpiresAt, user } = response;
+
+    this.cookieService.setRefreshToken(res, refreshToken, refreshTokenExpiresAt);
+
+    return { user, accessToken };
+  }
+
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  async login(
+    @Body() dto: LoginDto,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<AuthResponseDto> {
+    const deviceContext = this.deviceService.extractFromRequest(req);
+    const response = await this.authService.login(dto, deviceContext);
     const { accessToken, refreshToken, refreshTokenExpiresAt, user } = response;
 
     this.cookieService.setRefreshToken(res, refreshToken, refreshTokenExpiresAt);

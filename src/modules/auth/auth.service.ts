@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '@db/prisma.service';
-import { RegistrationSource } from '@prisma/client';
+import { RegistrationSource, UserStatus } from '@prisma/client';
 
 import { AuthCredentialsService } from '@modules/auth-credentials/auth-credentials.service';
 import { EmailTokenService } from '@modules/email-token/email-token.service';
@@ -13,10 +13,16 @@ import { UserService } from '@modules/user/user.service';
 
 import { PasswordService } from '@common/crypto/services';
 import { DeviceContext } from '@common/device/types';
-import { EmailAlreadyExistsException, WeakPasswordException } from '@common/exceptions';
+import {
+  AccountLockedException,
+  AccountSuspendedException,
+  EmailAlreadyExistsException,
+  InvalidCredentialsException,
+  WeakPasswordException,
+} from '@common/exceptions';
 import { MailService } from '@common/mail/mail.service';
 
-import { RegisterDto } from './dto';
+import { LoginDto, RegisterDto } from './dto';
 import { RegisterOutput } from './types';
 
 @Injectable()
@@ -80,6 +86,73 @@ export class AuthService {
     const userResponse = toUserResponseDto(user);
 
     return { user: userResponse, accessToken, refreshToken, refreshTokenExpiresAt };
+  }
+
+  async login(dto: LoginDto, deviceContext: DeviceContext): Promise<RegisterOutput> {
+    const user = await this.userService.findByEmail(dto.email);
+    if (!user) throw new InvalidCredentialsException();
+
+    if (user.status === UserStatus.SUSPENDED) {
+      throw new AccountSuspendedException();
+    }
+    if (user.status === UserStatus.DELETED) {
+      throw new InvalidCredentialsException();
+    }
+
+    const credentials = await this.authCredentialsService.findByUserId(user.id);
+    if (!credentials) throw new InvalidCredentialsException();
+
+    if (this.authCredentialsService.isLocked(credentials.lockedUntil)) {
+      throw new AccountLockedException();
+    }
+
+    const isPasswordValid = await this.passwordService.verify(
+      credentials.passwordHash,
+      dto.password,
+    );
+
+    if (!isPasswordValid) {
+      await this.authCredentialsService.handleFailedLogin(user.id);
+
+      const updatedCredentials = await this.authCredentialsService.findByUserId(user.id);
+      if (
+        updatedCredentials &&
+        this.authCredentialsService.isLocked(updatedCredentials.lockedUntil)
+      ) {
+        await this.mailService.sendAccountLockedEmail(
+          user.email,
+          user.firstName,
+          updatedCredentials.lockedUntil?.toISOString() ?? '',
+        );
+        throw new AccountLockedException();
+      }
+
+      throw new InvalidCredentialsException();
+    }
+
+    await this.authCredentialsService.handleSuccessfulLogin(user.id);
+    await this.userService.handleSuccessfulLogin(user.id);
+
+    const sessionId = this.sessionService.generateSessionId();
+    const accessTokenPayload: AccessTokenPayload = {
+      sub: user.id,
+      sid: sessionId,
+      email: user.email,
+    };
+
+    const { accessToken, refreshToken, session } = await this.sessionService.create(
+      { ...deviceContext, userId: user.id, id: sessionId },
+      accessTokenPayload,
+    );
+
+    const userResponse = toUserResponseDto(user);
+
+    return {
+      user: userResponse,
+      accessToken,
+      refreshToken,
+      refreshTokenExpiresAt: session.expiresAt,
+    };
   }
 
   async resendVerificationEmail(email: string): Promise<void> {
