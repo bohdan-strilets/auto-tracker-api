@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '@db/prisma.service';
 import { RegistrationSource, UserStatus } from '@prisma/client';
@@ -24,6 +24,7 @@ import {
   EmailAlreadyExistsException,
   InvalidCredentialsException,
   WeakPasswordException,
+  UnauthorizedException,
 } from '@common/exceptions';
 import { MailService } from '@common/mail/mail.service';
 

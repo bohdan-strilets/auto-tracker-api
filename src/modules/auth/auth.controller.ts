@@ -2,6 +2,7 @@ import { Body, Controller, HttpCode, HttpStatus, Post, Req, Res } from '@nestjs/
 
 import { Request, Response } from 'express';
 
+import { Public } from '@common/auth/decorators';
 import { CookieService } from '@common/cookie/cookie.service';
 import { DeviceService } from '@common/device/device.service';
 
@@ -25,6 +26,7 @@ export class AuthController {
     private readonly cookieService: CookieService,
   ) {}
 
+  @Public()
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   async register(
@@ -41,6 +43,7 @@ export class AuthController {
     return { user, accessToken };
   }
 
+  @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(
@@ -57,6 +60,7 @@ export class AuthController {
     return { user, accessToken };
   }
 
+  @Public()
   @Post('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
   async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response): Promise<void> {
@@ -65,6 +69,7 @@ export class AuthController {
     this.cookieService.clearRefreshToken(res);
   }
 
+  @Public()
   @Post('logout-all')
   @HttpCode(HttpStatus.NO_CONTENT)
   async logoutAll(@Req() req: Request, @Res({ passthrough: true }) res: Response): Promise<void> {
@@ -73,18 +78,21 @@ export class AuthController {
     this.cookieService.clearRefreshToken(res);
   }
 
+  @Public()
   @Post('resend-verification')
   @HttpCode(HttpStatus.NO_CONTENT)
   async resendVerification(@Body() dto: ResendVerificationDto): Promise<void> {
     await this.authService.resendVerificationEmail(dto.email);
   }
 
+  @Public()
   @Post('verify-email')
   @HttpCode(HttpStatus.NO_CONTENT)
   async verifyEmail(@Body() dto: VerifyEmailDto): Promise<void> {
     await this.authService.verifyEmail(dto.token);
   }
 
+  @Public()
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   async refresh(
@@ -101,12 +109,14 @@ export class AuthController {
     return { accessToken };
   }
 
+  @Public()
   @Post('forgot-password')
   @HttpCode(HttpStatus.NO_CONTENT)
   async forgotPassword(@Body() dto: ForgotPasswordDto): Promise<void> {
     await this.authService.forgotPassword(dto.email);
   }
 
+  @Public()
   @Post('reset-password')
   @HttpCode(HttpStatus.NO_CONTENT)
   async resetPassword(@Body() dto: ResetPasswordDto): Promise<void> {
