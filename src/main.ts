@@ -1,7 +1,10 @@
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
+import cookieParser from 'cookie-parser';
+
 import { GlobalExceptionFilter } from '@common/exceptions/filter';
+import { createValidationPipe } from '@common/pipes';
 
 import { ConfigService } from '@config/config.service';
 
@@ -16,8 +19,11 @@ async function bootstrap(): Promise<void> {
   const port = config.port;
   const nodeEnv = config.nodeEnv;
 
-  await app.listen(port);
   app.useGlobalFilters(new GlobalExceptionFilter());
+  app.useGlobalPipes(createValidationPipe());
+  app.use(cookieParser());
+
+  await app.listen(port);
 
   logger.verbose(`Server is running on port ${port} in ${nodeEnv} environment`);
 }
