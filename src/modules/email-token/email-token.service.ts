@@ -96,6 +96,8 @@ export class EmailTokenService {
   // ─── Email Change ────────────────────────────────────────────────────
 
   async createEmailChangeToken(userId: string, newEmail: string): Promise<EmailChangeOutput> {
+    await this.emailChangeTokenRepository.deleteAllByUserId(userId);
+
     const expiresMinutes = this.emailChangeExpiresMinutes;
     const { rawToken, tokenHash, expiresAt } = this.tokenService.generate(expiresMinutes);
 

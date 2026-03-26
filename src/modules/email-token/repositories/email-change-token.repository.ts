@@ -24,4 +24,10 @@ export class EmailChangeTokenRepository {
       data: { usedAt: now },
     });
   }
+
+  async deleteAllByUserId(userId: string): Promise<void> {
+    await this.prisma.emailChangeToken.deleteMany({
+      where: { userId },
+    });
+  }
 }
