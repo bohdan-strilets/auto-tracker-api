@@ -211,4 +211,34 @@ export class AuthService {
     if (!rawRefreshToken) throw new UnauthorizedException();
     return this.sessionService.refresh(rawRefreshToken);
   }
+
+  async forgotPassword(email: string): Promise<void> {
+    const user = await this.userService.findByEmail(email);
+
+    if (!user) return;
+    if (user.status !== UserStatus.ACTIVE) return;
+
+    const { rawToken } = await this.emailTokenService.createPasswordResetToken(user.id);
+    await this.mailService.sendPasswordResetEmail(user.email, user.firstName, rawToken);
+  }
+
+  async resetPassword(rawToken: string, newPassword: string): Promise<void> {
+    if (!this.passwordService.isStrong(newPassword)) {
+      throw new WeakPasswordException();
+    }
+
+    const token = await this.emailTokenService.usePasswordResetToken(rawToken);
+
+    const passwordHash = await this.passwordService.hash(newPassword);
+    await this.authCredentialsService.updatePassword(token.userId, passwordHash);
+
+    await this.sessionService.revokeAll(token.userId);
+
+    const user = await this.userService.getById(token.userId);
+    await this.mailService.sendPasswordChangedEmail(
+      user.email,
+      user.firstName,
+      new Date().toISOString(),
+    );
+  }
 }

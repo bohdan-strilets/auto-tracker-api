@@ -8,9 +8,11 @@ import { DeviceService } from '@common/device/device.service';
 import { AuthService } from './auth.service';
 import {
   AuthResponseDto,
+  ForgotPasswordDto,
   LoginDto,
   RefreshResponseDto,
   ResendVerificationDto,
+  ResetPasswordDto,
   VerifyEmailDto,
 } from './dto';
 import { RegisterDto } from './dto/register.dto';
@@ -97,5 +99,17 @@ export class AuthController {
     this.cookieService.setRefreshToken(res, newRefreshToken, refreshTokenExpiresAt);
 
     return { accessToken };
+  }
+
+  @Post('forgot-password')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async forgotPassword(@Body() dto: ForgotPasswordDto): Promise<void> {
+    await this.authService.forgotPassword(dto.email);
+  }
+
+  @Post('reset-password')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async resetPassword(@Body() dto: ResetPasswordDto): Promise<void> {
+    await this.authService.resetPassword(dto.token, dto.password);
   }
 }
