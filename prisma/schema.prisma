@@ -267,7 +267,7 @@ model User {
 model UserSettings {
   id                 String       @id @default(uuid())
   userId             String       @unique
-  user               User         @relation(fields: [userId], references: [id])
+  user               User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   currency           Currency     @default(PLN)
   language           Language     @default(POL)
   distanceUnit       DistanceUnit @default(KM)
@@ -282,7 +282,7 @@ model UserSettings {
 model EmailVerificationToken {
   id        String    @id @default(uuid())
   userId    String
-  user      User      @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   email     String    @unique
   tokenHash String
   expiresAt DateTime
@@ -293,7 +293,7 @@ model EmailVerificationToken {
 model EmailChangeToken {
   id        String    @id @default(uuid())
   userId    String
-  user      User      @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   newEmail  String    @unique
   tokenHash String
   expiresAt DateTime
@@ -304,7 +304,7 @@ model EmailChangeToken {
 model PasswordResetToken {
   id        String    @id @default(uuid())
   userId    String
-  user      User      @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   tokenHash String
   expiresAt DateTime
   usedAt    DateTime?
@@ -314,7 +314,7 @@ model PasswordResetToken {
 model AuthCredentials {
   id                    String    @id @default(uuid())
   userId                String    @unique
-  user                  User      @relation(fields: [userId], references: [id])
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   passwordHash          String
   passwordChangedAt     DateTime?
   passwordResetRequired Boolean
@@ -327,7 +327,7 @@ model AuthCredentials {
 model OAuthAccount {
   id                   String   @id @default(uuid())
   userId               String
-  user                 User     @relation(fields: [userId], references: [id])
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   provider             Provider
   providerUserId       String   @unique
   email                String?
@@ -339,7 +339,7 @@ model OAuthAccount {
 model ServiceStation {
   id               String             @id @default(uuid())
   userId           String
-  user             User               @relation(fields: [userId], references: [id])
+  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   name             String
   type             ServiceStationType
   address          String?
@@ -356,9 +356,9 @@ model ServiceStation {
 model FavoriteStation {
   id               String         @id @default(uuid())
   userId           String
-  user             User           @relation(fields: [userId], references: [id])
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   serviceStationId String
-  station          ServiceStation @relation(fields: [serviceStationId], references: [id])
+  station          ServiceStation @relation(fields: [serviceStationId], references: [id], onDelete: Cascade)
   createdAt        DateTime       @default(now())
 
   @@unique([userId, serviceStationId])
@@ -369,7 +369,7 @@ model FavoriteStation {
 model Session {
   id               String        @id @default(uuid())
   userId           String
-  user             User          @relation(fields: [userId], references: [id])
+  user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   refreshTokenHash String
   status           SessionStatus @default(ACTIVE)
   deviceType       DeviceType
@@ -402,9 +402,9 @@ model Workspace {
 model WorkspaceMember {
   id          String        @id @default(uuid())
   workspaceId String
-  workspace   Workspace     @relation(fields: [workspaceId], references: [id])
+  workspace   Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   userId      String
-  user        User          @relation(fields: [userId], references: [id])
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   role        WorkspaceRole @default(OWNER)
   createdAt   DateTime      @default(now())
 
@@ -414,9 +414,9 @@ model WorkspaceMember {
 model Invite {
   id          String       @id @default(uuid())
   invitedById String
-  invitedBy   User         @relation(fields: [invitedById], references: [id])
+  invitedBy   User         @relation(fields: [invitedById], references: [id], onDelete: Cascade)
   workspaceId String
-  workspace   Workspace    @relation(fields: [workspaceId], references: [id])
+  workspace   Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   email       String
   status      InviteStatus @default(PENDING)
   expiresAt   DateTime
@@ -430,7 +430,7 @@ model Invite {
 model Vehicle {
   id                   String                 @id @default(uuid())
   workspaceId          String
-  workspace            Workspace              @relation(fields: [workspaceId], references: [id])
+  workspace            Workspace              @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   brand                String
   model                String
   year                 Int
@@ -465,7 +465,7 @@ model Vehicle {
 model VehicleSpecs {
   id                  String   @id @default(uuid())
   vehicleId           String   @unique
-  vehicle             Vehicle  @relation(fields: [vehicleId], references: [id])
+  vehicle             Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
   engineCode          String?
   enginePowerHp       Int?
   enginePowerKw       Int?
@@ -483,7 +483,7 @@ model VehicleSpecs {
 model TimelineEvent {
   id          String            @id @default(uuid())
   vehicleId   String
-  vehicle     Vehicle           @relation(fields: [vehicleId], references: [id])
+  vehicle     Vehicle           @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
   type        TimelineEventType
   title       String
   description String?
@@ -504,7 +504,7 @@ model TimelineEvent {
 model FuelLog {
   id             String        @id @default(uuid())
   eventId        String        @unique
-  event          TimelineEvent @relation(fields: [eventId], references: [id])
+  event          TimelineEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
   liters         Decimal
   pricePerLiter  Decimal
   fuelType       FuelType
@@ -517,7 +517,7 @@ model FuelLog {
 model ServiceLog {
   id          String          @id @default(uuid())
   eventId     String          @unique
-  event       TimelineEvent   @relation(fields: [eventId], references: [id])
+  event       TimelineEvent   @relation(fields: [eventId], references: [id], onDelete: Cascade)
   category    ServiceCategory
   description String
   createdAt   DateTime        @default(now())
@@ -526,7 +526,7 @@ model ServiceLog {
 model MaintenanceIntervals {
   id                 String                   @id @default(uuid())
   vehicleId          String
-  vehicle            Vehicle                  @relation(fields: [vehicleId], references: [id])
+  vehicle            Vehicle                  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
   type               MaintenanceIntervalsType
   title              String
   intervalKm         Int?
@@ -542,7 +542,7 @@ model MaintenanceIntervals {
 model Document {
   id         String        @id @default(uuid())
   eventId    String        @unique
-  event      TimelineEvent @relation(fields: [eventId], references: [id])
+  event      TimelineEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
   type       DocumentType
   issueDate  DateTime?
   expireDate DateTime?
@@ -553,7 +553,7 @@ model Document {
 model Expense {
   id        String          @id @default(uuid())
   eventId   String          @unique
-  event     TimelineEvent   @relation(fields: [eventId], references: [id])
+  event     TimelineEvent   @relation(fields: [eventId], references: [id], onDelete: Cascade)
   category  ExpenseCategory
   notes     String?
   createdAt DateTime        @default(now())
@@ -562,7 +562,7 @@ model Expense {
 model Tire {
   id           String       @id @default(uuid())
   vehicleId    String
-  vehicle      Vehicle      @relation(fields: [vehicleId], references: [id])
+  vehicle      Vehicle      @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
   brand        String
   model        String
   type         TireType
@@ -579,7 +579,7 @@ model Tire {
 model TireChange {
   id               String        @id @default(uuid())
   eventId          String        @unique
-  event            TimelineEvent @relation(fields: [eventId], references: [id])
+  event            TimelineEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
   tireId           String
   tire             Tire          @relation(fields: [tireId], references: [id])
   installedDate    DateTime
@@ -592,7 +592,7 @@ model TireChange {
 model Trip {
   id           String        @id @default(uuid())
   eventId      String        @unique
-  event        TimelineEvent @relation(fields: [eventId], references: [id])
+  event        TimelineEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
   startMileage Int
   endMileage   Int
   distanceKm   Decimal
@@ -604,7 +604,7 @@ model Trip {
 model MileageLog {
   id        String        @id @default(uuid())
   vehicleId String
-  vehicle   Vehicle       @relation(fields: [vehicleId], references: [id])
+  vehicle   Vehicle       @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
   eventId   String?
   mileage   Int
   source    MileageSource
@@ -614,7 +614,7 @@ model MileageLog {
 model Reminder {
   id          String       @id @default(uuid())
   vehicleId   String
-  vehicle     Vehicle      @relation(fields: [vehicleId], references: [id])
+  vehicle     Vehicle      @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
   type        ReminderType
   title       String
   description String?
@@ -629,9 +629,9 @@ model Reminder {
 model Gallery {
   id        String   @id @default(uuid())
   vehicleId String
-  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
   mediaId   String
-  media     Media    @relation(fields: [mediaId], references: [id])
+  media     Media    @relation(fields: [mediaId], references: [id], onDelete: Cascade)
   position  Int      @default(0)
   createdAt DateTime @default(now())
 }
@@ -641,7 +641,7 @@ model Gallery {
 model Media {
   id              String         @id @default(uuid())
   userId          String
-  user            User           @relation(fields: [userId], references: [id])
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   type            MediaType
   mimeType        String
   originalName    String
@@ -660,7 +660,7 @@ model Media {
 model MediaVariant {
   id         String           @id @default(uuid())
   mediaId    String
-  media      Media            @relation(fields: [mediaId], references: [id])
+  media      Media            @relation(fields: [mediaId], references: [id], onDelete: Cascade)
   type       MediaVariantType
   storageKey String
   width      Int
@@ -672,7 +672,7 @@ model MediaVariant {
 model MediaUsage {
   id         String     @id @default(uuid())
   mediaId    String
-  media      Media      @relation(fields: [mediaId], references: [id])
+  media      Media      @relation(fields: [mediaId], references: [id], onDelete: Cascade)
   entityType EntityType
   entityId   String
   createdAt  DateTime   @default(now())
