@@ -123,3 +123,46 @@ export class SessionInvalidException extends AppException {
     super(HttpStatus.UNPROCESSABLE_ENTITY, ERROR_CODES.session.SESSION_INVALID);
   }
 }
+
+// Workspace
+export class WorkspaceNotFoundException extends AppException {
+  constructor() {
+    super(HttpStatus.NOT_FOUND, ERROR_CODES.workspace.WORKSPACE_NOT_FOUND);
+  }
+}
+
+export class WorkspaceMemberNotFoundException extends AppException {
+  constructor() {
+    super(HttpStatus.NOT_FOUND, ERROR_CODES.workspace.WORKSPACE_MEMBER_NOT_FOUND);
+  }
+}
+
+export class NotWorkspaceMemberException extends AppException {
+  constructor() {
+    super(HttpStatus.FORBIDDEN, ERROR_CODES.workspace.NOT_WORKSPACE_MEMBER);
+  }
+}
+
+export class InsufficientPermissionsException extends AppException {
+  constructor() {
+    super(HttpStatus.FORBIDDEN, ERROR_CODES.workspace.INSUFFICIENT_PERMISSIONS);
+  }
+}
+
+export class SoleOwnerException extends AppException {
+  constructor() {
+    super(HttpStatus.FORBIDDEN, ERROR_CODES.workspace.SOLE_OWNER);
+  }
+}
+
+export class AdminCannotAssignOwnerException extends AppException {
+  constructor() {
+    super(HttpStatus.FORBIDDEN, ERROR_CODES.workspace.ADMIN_CANNOT_ASSIGN_OWNER);
+  }
+}
+
+export class AdminCannotRemovePrivilegedException extends AppException {
+  constructor() {
+    super(HttpStatus.FORBIDDEN, ERROR_CODES.workspace.ADMIN_CANNOT_REMOVE_PRIVILEGED);
+  }
+}
