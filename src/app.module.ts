@@ -7,6 +7,7 @@ import { AuthCredentialsModule } from '@modules/auth-credentials/auth-credential
 import { EmailTokenModule } from '@modules/email-token/email-token.module';
 import { OAuthModule } from '@modules/oauth/oauth.module';
 import { SessionModule } from '@modules/session/session.module';
+import { WorkspaceModule } from '@modules/workspace/workspace.module';
 
 import { AuthGuardModule } from '@common/auth/auth.module';
 import { CookieModule } from '@common/cookie/cookie.module';
@@ -36,6 +37,7 @@ import { UserModule } from './modules/user/user.module';
     CookieModule,
     AuthGuardModule,
     ThrottlerConfigModule,
+    WorkspaceModule,
   ],
   providers: [
     {

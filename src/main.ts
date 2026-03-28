@@ -1,8 +1,9 @@
 import { Logger } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 
 import cookieParser from 'cookie-parser';
 
+import { JwtAuthGuard } from '@common/auth/guards';
 import { GlobalExceptionFilter } from '@common/exceptions/filter';
 import { createValidationPipe } from '@common/pipes';
 import { setupSwagger } from '@common/swagger';
@@ -21,6 +22,8 @@ async function bootstrap(): Promise<void> {
   const nodeEnv = config.nodeEnv;
   const isProduction = config.isProduction;
 
+  const reflector = app.get(Reflector);
+
   if (!isProduction) {
     setupSwagger(app);
   }
@@ -28,6 +31,8 @@ async function bootstrap(): Promise<void> {
   app.useGlobalFilters(new GlobalExceptionFilter());
   app.useGlobalPipes(createValidationPipe());
   app.use(cookieParser());
+
+  app.useGlobalGuards(new JwtAuthGuard(reflector));
 
   await app.listen(port);
 
