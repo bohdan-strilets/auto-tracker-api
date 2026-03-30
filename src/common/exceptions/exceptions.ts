@@ -166,3 +166,26 @@ export class AdminCannotRemovePrivilegedException extends AppException {
     super(HttpStatus.FORBIDDEN, ERROR_CODES.workspace.ADMIN_CANNOT_REMOVE_PRIVILEGED);
   }
 }
+
+export class WorkspaceMemberAlreadyExistsException extends AppException {
+  constructor() {
+    super(HttpStatus.CONFLICT, ERROR_CODES.workspace.WORKSPACE_MEMBER_ALREADY_EXISTS);
+  }
+}
+
+// Invite
+export class InviteNotFoundException extends AppException {
+  constructor() {
+    super(HttpStatus.NOT_FOUND, ERROR_CODES.invite.INVITE_NOT_FOUND);
+  }
+}
+export class InviteAlreadyExistsException extends AppException {
+  constructor() {
+    super(HttpStatus.CONFLICT, ERROR_CODES.invite.INVITE_ALREADY_EXISTS);
+  }
+}
+export class InviteExpiredException extends AppException {
+  constructor() {
+    super(HttpStatus.UNPROCESSABLE_ENTITY, ERROR_CODES.invite.INVITE_EXPIRED);
+  }
+}

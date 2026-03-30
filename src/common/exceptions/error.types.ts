@@ -7,7 +7,8 @@ export type ErrorCode =
   | (typeof ERROR_CODES.token)[keyof typeof ERROR_CODES.token]
   | (typeof ERROR_CODES.oauth)[keyof typeof ERROR_CODES.oauth]
   | (typeof ERROR_CODES.session)[keyof typeof ERROR_CODES.session]
-  | (typeof ERROR_CODES.workspace)[keyof typeof ERROR_CODES.workspace];
+  | (typeof ERROR_CODES.workspace)[keyof typeof ERROR_CODES.workspace]
+  | (typeof ERROR_CODES.invite)[keyof typeof ERROR_CODES.invite];
 
 export type ErrorDetail = {
   field: string;
