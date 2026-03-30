@@ -5,3 +5,4 @@ export { WelcomeTemplate } from './welcome.tymplate';
 export { PasswordChangedTemplate } from './password-changed.template';
 export { AccountLockedTemplate } from './account-locked.template';
 export { EmailChangeNotificationTemplate } from './email-change-notification';
+export { WorkspaceInviteTemplate } from './workspace-invite.template';

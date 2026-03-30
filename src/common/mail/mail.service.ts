@@ -13,6 +13,7 @@ import {
   ResetPasswordTemplate,
   VerifyEmailTemplate,
   WelcomeTemplate,
+  WorkspaceInviteTemplate,
 } from './templates';
 
 @Injectable()
@@ -113,6 +114,29 @@ export class MailService {
   ): Promise<void> {
     const html = await render(EmailChangeNotificationTemplate({ firstName, newEmail }));
     await this.send(to, 'Your email address is being changed', html);
+  }
+
+  async sendWorkspaceInvite(params: {
+    to: string;
+    token: string;
+    workspaceName: string;
+    invitedByName: string;
+    role: string;
+  }): Promise<void> {
+    const acceptUrl = `${this.appUrl}/invites/${params.token}/accept`;
+    const rejectUrl = `${this.appUrl}/invites/${params.token}/reject`;
+
+    const html = await render(
+      WorkspaceInviteTemplate({
+        workspaceName: params.workspaceName,
+        invitedByName: params.invitedByName,
+        role: params.role,
+        acceptUrl,
+        rejectUrl,
+      }),
+    );
+
+    await this.send(params.to, `You've been invited to ${params.workspaceName}`, html);
   }
 
   // Helper methods
