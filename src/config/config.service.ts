@@ -98,4 +98,15 @@ export class ConfigService {
   get throttleAuthLimit(): number {
     return this.env.THROTTLE_AUTH_LIMIT;
   }
+
+  // Cloudinary
+  get cloudinaryCloudName(): string {
+    return this.env.CLOUDINARY_CLOUD_NAME;
+  }
+  get cloudinaryApiKey(): string {
+    return this.env.CLOUDINARY_API_KEY;
+  }
+  get cloudinaryApiSecret(): string {
+    return this.env.CLOUDINARY_API_SECRET;
+  }
 }

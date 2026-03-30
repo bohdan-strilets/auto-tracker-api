@@ -31,4 +31,8 @@ export const envSchema = z.object({
   THROTTLE_DEFAULT_LIMIT: z.coerce.number().min(1).default(100),
   THROTTLE_AUTH_TTL: z.coerce.number().min(1).default(60000),
   THROTTLE_AUTH_LIMIT: z.coerce.number().min(1).default(5),
+
+  CLOUDINARY_CLOUD_NAME: z.string().min(1).max(255),
+  CLOUDINARY_API_KEY: z.string().min(1).max(255),
+  CLOUDINARY_API_SECRET: z.string().min(1).max(255),
 });

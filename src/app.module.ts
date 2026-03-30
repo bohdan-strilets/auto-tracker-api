@@ -12,6 +12,7 @@ import { VehicleModule } from '@modules/vehicle/vehicle.module';
 import { WorkspaceModule } from '@modules/workspace/workspace.module';
 
 import { AuthGuardModule } from '@common/auth/auth.module';
+import { CloudinaryModule } from '@common/cloudinary/cloudinary.module';
 import { CookieModule } from '@common/cookie/cookie.module';
 import { CryptoModule } from '@common/crypto/crypto.module';
 import { DeviceModule } from '@common/device/device.module';
@@ -42,6 +43,7 @@ import { UserModule } from './modules/user/user.module';
     WorkspaceModule,
     InviteModule,
     VehicleModule,
+    CloudinaryModule,
   ],
   providers: [
     {
