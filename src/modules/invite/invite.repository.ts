@@ -33,8 +33,12 @@ export class InviteRepository {
     return client.invite.findUnique({ where: { workspaceId_email: { workspaceId, email } } });
   }
 
-  async findAllByWorkspaceId(workspaceId: string): Promise<Invite[]> {
-    return this.prisma.invite.findMany({
+  async findAllByWorkspaceId(
+    workspaceId: string,
+    tx?: Prisma.TransactionClient,
+  ): Promise<Invite[]> {
+    const client = tx ?? this.prisma;
+    return client.invite.findMany({
       where: { workspaceId },
       orderBy: { createdAt: 'desc' },
     });

@@ -7,13 +7,13 @@ import { WorkspaceModule } from '@modules/workspace/workspace.module';
 
 import { MailModule } from '@common/mail/mail.module';
 
-import { InviteController } from './invite.controller';
+import { InviteActionsController, WorkspaceInviteController } from './controllers';
 import { InviteRepository } from './invite.repository';
 import { InviteService } from './invite.service';
 
 @Module({
   imports: [PrismaModule, MailModule, WorkspaceModule, UserModule],
-  controllers: [InviteController],
+  controllers: [InviteActionsController, WorkspaceInviteController],
   providers: [InviteService, InviteRepository],
 })
 export class InviteModule {}

@@ -21,8 +21,12 @@ export class WorkspaceMemberRepository {
     });
   }
 
-  async findAllByWorkspaceId(workspaceId: string): Promise<WorkspaceMemberWithUser[]> {
-    return this.prisma.workspaceMember.findMany({
+  async findAllByWorkspaceId(
+    workspaceId: string,
+    tx?: Prisma.TransactionClient,
+  ): Promise<WorkspaceMemberWithUser[]> {
+    const client = tx ?? this.prisma;
+    return client.workspaceMember.findMany({
       where: { workspaceId },
       include: { user: { select: memberUserSelect } },
       orderBy: { createdAt: 'asc' },

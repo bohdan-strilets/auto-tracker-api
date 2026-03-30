@@ -4,7 +4,7 @@ import { PrismaService } from '@db/prisma.service';
 import { Invite, InviteStatus, WorkspaceRole } from '@prisma/client';
 
 import { UserService } from '@modules/user/user.service';
-import { WorkspaceService } from '@modules/workspace/workspace.service';
+import { WorkspaceMemberService, WorkspaceService } from '@modules/workspace/services';
 
 import {
   InsufficientPermissionsException,
@@ -26,6 +26,7 @@ export class InviteService {
   constructor(
     private readonly inviteRepository: InviteRepository,
     private readonly workspaceService: WorkspaceService,
+    private readonly workspaceMemberService: WorkspaceMemberService,
     private readonly userService: UserService,
     private readonly mailService: MailService,
     private readonly prisma: PrismaService,
@@ -39,7 +40,7 @@ export class InviteService {
     const email = normalizeEmail(dto.email);
     const role = dto.role ?? WorkspaceRole.MEMBER;
 
-    const requestingRole = await this.workspaceService.getMemberRole(workspaceId, invitedById);
+    const requestingRole = await this.workspaceMemberService.getRole(workspaceId, invitedById);
     if (requestingRole === WorkspaceRole.ADMIN && role === WorkspaceRole.OWNER) {
       throw new InsufficientPermissionsException();
     }
@@ -64,8 +65,10 @@ export class InviteService {
       expiresAt,
     });
 
-    const workspaceName = await this.workspaceService.getWorkspaceName(workspaceId);
-    const invitedByName = await this.userService.getFullName(invitedById);
+    const [workspaceName, invitedByName] = await Promise.all([
+      this.workspaceService.getName(workspaceId),
+      this.userService.getFullName(invitedById),
+    ]);
 
     await this.mailService.sendWorkspaceInvite({
       to: email,
@@ -94,11 +97,11 @@ export class InviteService {
   async acceptInvite(token: string, userId: string): Promise<void> {
     const invite = await this.getValidInvite(token);
 
-    const existingMember = await this.workspaceService.findMember(invite.workspaceId, userId);
+    const existingMember = await this.workspaceMemberService.findMember(invite.workspaceId, userId);
     if (existingMember) throw new WorkspaceMemberAlreadyExistsException();
 
     await this.prisma.$transaction(async (tx) => {
-      await this.workspaceService.addMember(invite.workspaceId, userId, invite.role, tx);
+      await this.workspaceMemberService.add(invite.workspaceId, userId, invite.role, tx);
       await this.inviteRepository.updateStatus(invite.id, InviteStatus.ACCEPTED, tx);
     });
   }
