@@ -6,6 +6,7 @@ import { WorkspaceNotFoundException } from '@common/exceptions';
 
 import { CreateWorkspaceDto, UpdateWorkspaceDto } from '../dto';
 import { WorkspaceRepository } from '../repositories';
+import { mapWorkspaceToResponse } from '../workspace.mapper';
 
 @Injectable()
 export class WorkspaceService {
@@ -18,13 +19,14 @@ export class WorkspaceService {
   }
 
   async findAll(userId: string) {
-    return this.workspaceRepository.findAllByUserId(userId);
+    const workspaces = await this.workspaceRepository.findAllByUserId(userId);
+    return workspaces.map((w) => mapWorkspaceToResponse(w, userId));
   }
 
-  async getOne(workspaceId: string) {
+  async getOne(workspaceId: string, userId: string) {
     const workspace = await this.workspaceRepository.findByIdWithMembers(workspaceId);
     if (!workspace) throw new WorkspaceNotFoundException();
-    return workspace;
+    return mapWorkspaceToResponse(workspace, userId);
   }
 
   async update(workspaceId: string, dto: UpdateWorkspaceDto): Promise<Workspace> {

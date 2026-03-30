@@ -2,27 +2,24 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import { WorkspaceRole } from '@prisma/client';
 
+import { MemberUserResponseDto } from './member-user-response.dto';
+
 export class WorkspaceMemberResponseDto {
-  @ApiProperty()
+  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })
   declare id: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })
   declare userId: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })
   declare workspaceId: string;
 
-  @ApiProperty({ enum: WorkspaceRole })
+  @ApiProperty({ enum: WorkspaceRole, example: WorkspaceRole.MEMBER })
   declare role: WorkspaceRole;
 
-  @ApiProperty()
+  @ApiProperty({ example: '2024-01-01T00:00:00.000Z' })
   declare createdAt: Date;
 
-  @ApiPropertyOptional()
-  declare user?: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-  };
+  @ApiPropertyOptional({ type: MemberUserResponseDto })
+  user?: MemberUserResponseDto;
 }

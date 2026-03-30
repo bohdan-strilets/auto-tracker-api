@@ -9,7 +9,13 @@ import {
   ParseUUIDPipe,
   Patch,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiNoContentResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiNoContentResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { CurrentUserId } from '@common/auth/decorators';
 import {
@@ -19,7 +25,7 @@ import {
 } from '@common/swagger';
 
 import { IsAdmin, IsMember } from '../decorators';
-import { UpdateMemberRoleDto } from '../dto';
+import { UpdateMemberRoleDto, WorkspaceMemberResponseDto } from '../dto';
 import { WorkspaceMemberService, WorkspaceService } from '../services';
 
 @ApiTags('Workspaces')
@@ -34,6 +40,7 @@ export class WorkspaceMemberController {
   @Get()
   @IsMember()
   @ApiOperation({ summary: 'List workspace members' })
+  @ApiOkResponse({ type: [WorkspaceMemberResponseDto] })
   @ApiGetMembersResponse()
   getMembers(@Param('workspaceId', ParseUUIDPipe) workspaceId: string) {
     return this.workspaceMemberService.getAll(workspaceId);
@@ -42,6 +49,7 @@ export class WorkspaceMemberController {
   @Patch(':targetUserId')
   @IsAdmin()
   @ApiOperation({ summary: 'Update member role (Owner/Admin only)' })
+  @ApiOkResponse({ type: WorkspaceMemberResponseDto })
   @ApiUpdateMemberRoleResponse()
   updateRole(
     @Param('workspaceId', ParseUUIDPipe) workspaceId: string,

@@ -1,11 +1,11 @@
 import { Body, Controller, Param, ParseUUIDPipe, Patch } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags, ApiOkResponse } from '@nestjs/swagger';
 
 import { IsAdmin } from '@modules/workspace/decorators';
 
 import { ApiUpdateVehicleSpecsResponse } from '@common/swagger';
 
-import { UpdateVehicleSpecsDto } from '../dto';
+import { UpdateVehicleSpecsDto, VehicleSpecsResponseDto } from '../dto';
 import { VehicleService } from '../vehicle.service';
 
 @ApiTags('Vehicles')
@@ -17,6 +17,7 @@ export class VehicleSpecsController {
   @Patch(':vehicleId/specs')
   @IsAdmin()
   @ApiOperation({ summary: 'Update vehicle specs (Admin/Owner only)' })
+  @ApiOkResponse({ type: VehicleSpecsResponseDto })
   @ApiUpdateVehicleSpecsResponse()
   updateSpecs(
     @Param('workspaceId', ParseUUIDPipe) workspaceId: string,

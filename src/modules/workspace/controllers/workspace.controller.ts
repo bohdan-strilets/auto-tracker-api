@@ -13,9 +13,9 @@ import {
 import {
   ApiBearerAuth,
   ApiNoContentResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiTags,
-  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
 import { CurrentUserId } from '@common/auth/decorators';
@@ -23,11 +23,12 @@ import {
   ApiCreateWorkspaceResponse,
   ApiDeleteWorkspaceResponse,
   ApiGetWorkspaceResponse,
+  ApiUnauthorizedResponse,
   ApiUpdateWorkspaceResponse,
 } from '@common/swagger';
 
 import { IsAdmin, IsMember, IsOwner } from '../decorators';
-import { CreateWorkspaceDto, UpdateWorkspaceDto } from '../dto';
+import { CreateWorkspaceDto, UpdateWorkspaceDto, WorkspaceResponseDto } from '../dto';
 import { WorkspaceService } from '../services';
 
 @ApiTags('Workspaces')
@@ -38,6 +39,7 @@ export class WorkspaceController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new workspace' })
+  @ApiOkResponse({ type: WorkspaceResponseDto })
   @ApiCreateWorkspaceResponse()
   create(@Body() dto: CreateWorkspaceDto, @CurrentUserId() userId: string) {
     return this.workspaceService.create(dto, userId);
@@ -45,6 +47,7 @@ export class WorkspaceController {
 
   @Get()
   @ApiOperation({ summary: 'Get all workspaces for current user' })
+  @ApiOkResponse({ type: [WorkspaceResponseDto] })
   @ApiUnauthorizedResponse()
   findAll(@CurrentUserId() userId: string) {
     return this.workspaceService.findAll(userId);
@@ -53,14 +56,19 @@ export class WorkspaceController {
   @Get(':workspaceId')
   @IsMember()
   @ApiOperation({ summary: 'Get workspace by ID' })
+  @ApiOkResponse({ type: WorkspaceResponseDto })
   @ApiGetWorkspaceResponse()
-  findOne(@Param('workspaceId', ParseUUIDPipe) workspaceId: string) {
-    return this.workspaceService.getOne(workspaceId);
+  findOne(
+    @Param('workspaceId', ParseUUIDPipe) workspaceId: string,
+    @CurrentUserId() userId: string,
+  ) {
+    return this.workspaceService.getOne(workspaceId, userId);
   }
 
   @Patch(':workspaceId')
   @IsAdmin()
   @ApiOperation({ summary: 'Update workspace name or type' })
+  @ApiOkResponse({ type: WorkspaceResponseDto })
   @ApiUpdateWorkspaceResponse()
   update(
     @Param('workspaceId', ParseUUIDPipe) workspaceId: string,

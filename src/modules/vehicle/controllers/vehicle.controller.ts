@@ -11,7 +11,13 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiNoContentResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiNoContentResponse,
+  ApiOperation,
+  ApiTags,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 
 import { IsAdmin, IsMember } from '@modules/workspace/decorators';
 
@@ -23,7 +29,13 @@ import {
   ApiUpdateVehicleResponse,
 } from '@common/swagger';
 
-import { CreateVehicleDto, UpdateVehicleDto, VehicleQueryDto } from '../dto';
+import {
+  CreateVehicleDto,
+  UpdateVehicleDto,
+  VehicleListResponseDto,
+  VehicleQueryDto,
+  VehicleResponseDto,
+} from '../dto';
 import { VehicleService } from '../vehicle.service';
 
 @ApiTags('Vehicles')
@@ -35,6 +47,7 @@ export class VehicleController {
   @Post()
   @IsAdmin()
   @ApiOperation({ summary: 'Create vehicle (Admin/Owner only)' })
+  @ApiOkResponse({ type: VehicleResponseDto })
   @ApiCreateVehicleResponse()
   create(@Param('workspaceId', ParseUUIDPipe) workspaceId: string, @Body() dto: CreateVehicleDto) {
     return this.vehicleService.create(workspaceId, dto);
@@ -43,6 +56,7 @@ export class VehicleController {
   @Get()
   @IsMember()
   @ApiOperation({ summary: 'List workspace vehicles' })
+  @ApiOkResponse({ type: VehicleListResponseDto })
   @ApiGetVehiclesResponse()
   findAll(
     @Param('workspaceId', ParseUUIDPipe) workspaceId: string,
@@ -54,6 +68,7 @@ export class VehicleController {
   @Get(':vehicleId')
   @IsMember()
   @ApiOperation({ summary: 'Get vehicle by ID' })
+  @ApiOkResponse({ type: VehicleResponseDto })
   @ApiGetVehicleResponse()
   findOne(
     @Param('workspaceId', ParseUUIDPipe) workspaceId: string,
@@ -65,6 +80,7 @@ export class VehicleController {
   @Patch(':vehicleId')
   @IsAdmin()
   @ApiOperation({ summary: 'Update vehicle (Admin/Owner only)' })
+  @ApiOkResponse({ type: VehicleResponseDto })
   @ApiUpdateVehicleResponse()
   update(
     @Param('workspaceId', ParseUUIDPipe) workspaceId: string,
