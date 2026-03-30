@@ -1,2 +1,6 @@
 export { setupSwagger } from './swagger.setup';
-export * from './api-responses';
+export * from './responses/base.responses';
+export * from './responses/auth.responses';
+export * from './responses/invite.responses';
+export * from './responses/session.responses';
+export * from './responses/workspace.responses';
