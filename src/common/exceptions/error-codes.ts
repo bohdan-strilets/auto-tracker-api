@@ -57,4 +57,11 @@ export const ERROR_CODES = {
   vehicle: {
     VEHICLE_NOT_FOUND: 'VEHICLE_NOT_FOUND',
   },
+
+  media: {
+    MEDIA_NOT_FOUND: 'MEDIA_NOT_FOUND',
+    MEDIA_OWNERSHIP: 'MEDIA_OWNERSHIP',
+    INVALID_FILE_TYPE: 'INVALID_FILE_TYPE',
+    FILE_TOO_LARGE: 'FILE_TOO_LARGE',
+  },
 } as const;

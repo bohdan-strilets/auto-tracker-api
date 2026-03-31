@@ -9,7 +9,8 @@ export type ErrorCode =
   | (typeof ERROR_CODES.session)[keyof typeof ERROR_CODES.session]
   | (typeof ERROR_CODES.workspace)[keyof typeof ERROR_CODES.workspace]
   | (typeof ERROR_CODES.invite)[keyof typeof ERROR_CODES.invite]
-  | (typeof ERROR_CODES.vehicle)[keyof typeof ERROR_CODES.vehicle];
+  | (typeof ERROR_CODES.vehicle)[keyof typeof ERROR_CODES.vehicle]
+  | (typeof ERROR_CODES.media)[keyof typeof ERROR_CODES.media];
 
 export type ErrorDetail = {
   field: string;

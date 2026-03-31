@@ -196,3 +196,25 @@ export class VehicleNotFoundException extends AppException {
     super(HttpStatus.NOT_FOUND, ERROR_CODES.vehicle.VEHICLE_NOT_FOUND);
   }
 }
+
+// Media
+export class MediaNotFoundException extends AppException {
+  constructor() {
+    super(HttpStatus.NOT_FOUND, ERROR_CODES.media.MEDIA_NOT_FOUND);
+  }
+}
+export class MediaOwnershipException extends AppException {
+  constructor() {
+    super(HttpStatus.FORBIDDEN, ERROR_CODES.media.MEDIA_OWNERSHIP);
+  }
+}
+export class InvalidFileTypeException extends AppException {
+  constructor() {
+    super(HttpStatus.UNPROCESSABLE_ENTITY, ERROR_CODES.media.INVALID_FILE_TYPE);
+  }
+}
+export class FileTooLargeException extends AppException {
+  constructor() {
+    super(HttpStatus.UNPROCESSABLE_ENTITY, ERROR_CODES.media.FILE_TOO_LARGE);
+  }
+}

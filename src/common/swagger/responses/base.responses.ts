@@ -58,3 +58,12 @@ export const ApiNotFoundResponse = (code: string) =>
       example: { statusCode: 404, code, details: null },
     },
   });
+
+export const ApiUnprocessableResponse = (code: string) =>
+  ApiResponse({
+    status: HttpStatus.UNPROCESSABLE_ENTITY,
+    description: 'Unprocessable entity',
+    schema: {
+      example: { statusCode: 422, code, details: null },
+    },
+  });

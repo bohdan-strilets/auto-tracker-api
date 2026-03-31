@@ -1,0 +1,7 @@
+export const ALLOWED_MIME_TYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'video/mp4',
+  'application/pdf',
+] as const;

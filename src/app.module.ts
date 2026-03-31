@@ -6,6 +6,7 @@ import { AuthModule } from '@modules/auth/auth.module';
 import { AuthCredentialsModule } from '@modules/auth-credentials/auth-credentials.module';
 import { EmailTokenModule } from '@modules/email-token/email-token.module';
 import { InviteModule } from '@modules/invite/invite.module';
+import { MediaModule } from '@modules/media/media.module';
 import { OAuthModule } from '@modules/oauth/oauth.module';
 import { SessionModule } from '@modules/session/session.module';
 import { VehicleModule } from '@modules/vehicle/vehicle.module';
@@ -44,6 +45,7 @@ import { UserModule } from './modules/user/user.module';
     InviteModule,
     VehicleModule,
     CloudinaryModule,
+    MediaModule,
   ],
   providers: [
     {

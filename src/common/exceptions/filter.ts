@@ -9,6 +9,7 @@ import {
 import { ThrottlerException } from '@nestjs/throttler';
 
 import { Response } from 'express';
+import { MulterError } from 'multer';
 
 import { ERROR_CODES } from './error-codes';
 import { ErrorResponse } from './error.types';
@@ -29,6 +30,18 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       };
       response.status(HttpStatus.TOO_MANY_REQUESTS).json(body);
       return;
+    }
+
+    if (exception instanceof MulterError) {
+      if (exception.code === 'LIMIT_FILE_SIZE') {
+        const body: ErrorResponse = {
+          statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+          code: ERROR_CODES.media.FILE_TOO_LARGE,
+          details: null,
+        };
+        response.status(HttpStatus.UNPROCESSABLE_ENTITY).json(body);
+        return;
+      }
     }
 
     if (exception instanceof HttpException) {
