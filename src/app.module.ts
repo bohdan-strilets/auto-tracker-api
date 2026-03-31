@@ -5,10 +5,12 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 import { AuthModule } from '@modules/auth/auth.module';
 import { AuthCredentialsModule } from '@modules/auth-credentials/auth-credentials.module';
 import { EmailTokenModule } from '@modules/email-token/email-token.module';
+import { FuelLogModule } from '@modules/fuel-log/fuel-log.module';
 import { InviteModule } from '@modules/invite/invite.module';
 import { MediaModule } from '@modules/media/media.module';
 import { OAuthModule } from '@modules/oauth/oauth.module';
 import { SessionModule } from '@modules/session/session.module';
+import { TimelineModule } from '@modules/timeline/timeline.module';
 import { VehicleModule } from '@modules/vehicle/vehicle.module';
 import { WorkspaceModule } from '@modules/workspace/workspace.module';
 
@@ -46,6 +48,8 @@ import { UserModule } from './modules/user/user.module';
     VehicleModule,
     CloudinaryModule,
     MediaModule,
+    TimelineModule,
+    FuelLogModule,
   ],
   providers: [
     {
