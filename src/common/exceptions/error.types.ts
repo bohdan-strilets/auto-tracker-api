@@ -10,7 +10,8 @@ export type ErrorCode =
   | (typeof ERROR_CODES.workspace)[keyof typeof ERROR_CODES.workspace]
   | (typeof ERROR_CODES.invite)[keyof typeof ERROR_CODES.invite]
   | (typeof ERROR_CODES.vehicle)[keyof typeof ERROR_CODES.vehicle]
-  | (typeof ERROR_CODES.media)[keyof typeof ERROR_CODES.media];
+  | (typeof ERROR_CODES.media)[keyof typeof ERROR_CODES.media]
+  | (typeof ERROR_CODES.timeline)[keyof typeof ERROR_CODES.timeline];
 
 export type ErrorDetail = {
   field: string;

@@ -64,4 +64,8 @@ export const ERROR_CODES = {
     INVALID_FILE_TYPE: 'INVALID_FILE_TYPE',
     FILE_TOO_LARGE: 'FILE_TOO_LARGE',
   },
+
+  timeline: {
+    TIMELINE_EVENT_NOT_FOUND: 'TIMELINE_EVENT_NOT_FOUND',
+  },
 } as const;

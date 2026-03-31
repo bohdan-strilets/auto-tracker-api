@@ -218,3 +218,10 @@ export class FileTooLargeException extends AppException {
     super(HttpStatus.UNPROCESSABLE_ENTITY, ERROR_CODES.media.FILE_TOO_LARGE);
   }
 }
+
+// Timeline
+export class TimelineEventNotFoundException extends AppException {
+  constructor() {
+    super(HttpStatus.NOT_FOUND, ERROR_CODES.timeline.TIMELINE_EVENT_NOT_FOUND);
+  }
+}
