@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '@db/prisma.service';
-import { MileageSource, Prisma, TimelineEvent } from '@prisma/client';
+import { MileageSource, TimelineEvent } from '@prisma/client';
 
 import { VehicleService } from '@modules/vehicle/vehicle.service';
 
@@ -9,6 +9,7 @@ import { TimelineEventNotFoundException } from '@common/exceptions';
 import { paginate } from '@common/pagination';
 
 import { TimelineQueryDto } from './dto/timeline-query.dto';
+import { MileageLogService } from './events/mileage-log';
 import { TimelineRepository } from './timeline.repository';
 import { CreateDetailsFn, CreateTimelineEventInput, TimelineEventWithDetails } from './types';
 
@@ -18,6 +19,7 @@ export class TimelineService {
     private readonly repository: TimelineRepository,
     private readonly vehicleService: VehicleService,
     private readonly prisma: PrismaService,
+    private readonly mileageLogService: MileageLogService,
   ) {}
 
   // ─── Centralized event creation ───────────────────────────────────────────
@@ -35,15 +37,14 @@ export class TimelineService {
       await createDetails(event.id, tx);
 
       if (eventData.mileage) {
-        await this.updateMileage(
+        await this.mileageLogService.recordMileage(
           vehicleId,
           eventData.mileage,
-          event.id,
           mileageSource ?? MileageSource.MANUAL,
+          event.id,
           tx,
         );
       }
-
       return event;
     });
   }
@@ -67,27 +68,5 @@ export class TimelineService {
   async delete(eventId: string): Promise<void> {
     await this.getOne(eventId);
     await this.repository.delete(eventId);
-  }
-
-  // ─── Helpers ──────────────────────────────────────────────────────────────
-
-  private async updateMileage(
-    vehicleId: string,
-    mileage: number,
-    eventId: string,
-    source: MileageSource,
-    tx: Prisma.TransactionClient,
-  ): Promise<void> {
-    await Promise.all([
-      this.vehicleService.updateCurrentMileage(vehicleId, mileage, tx),
-      tx.mileageLog.create({
-        data: {
-          vehicle: { connect: { id: vehicleId } },
-          mileage,
-          source,
-          eventId,
-        },
-      }),
-    ]);
   }
 }
