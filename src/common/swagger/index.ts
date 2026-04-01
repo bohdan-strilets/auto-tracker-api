@@ -7,3 +7,4 @@ export * from './responses/workspace.responses';
 export * from './responses/vehicle.responses';
 export * from './responses/media.response';
 export * from './responses/timeline.response';
+export * from './responses/tire.response';

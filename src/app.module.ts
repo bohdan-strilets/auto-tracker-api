@@ -10,6 +10,7 @@ import { MediaModule } from '@modules/media/media.module';
 import { OAuthModule } from '@modules/oauth/oauth.module';
 import { SessionModule } from '@modules/session/session.module';
 import { TimelineModule } from '@modules/timeline/timeline.module';
+import { TireModule } from '@modules/tire/tire.module';
 import { VehicleModule } from '@modules/vehicle/vehicle.module';
 import { WorkspaceModule } from '@modules/workspace/workspace.module';
 
@@ -48,6 +49,7 @@ import { UserModule } from './modules/user/user.module';
     CloudinaryModule,
     MediaModule,
     TimelineModule,
+    TireModule,
   ],
   providers: [
     {

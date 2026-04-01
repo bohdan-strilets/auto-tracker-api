@@ -225,3 +225,16 @@ export class TimelineEventNotFoundException extends AppException {
     super(HttpStatus.NOT_FOUND, ERROR_CODES.timeline.TIMELINE_EVENT_NOT_FOUND);
   }
 }
+
+// Tire
+export class TireNotFoundException extends AppException {
+  constructor() {
+    super(HttpStatus.NOT_FOUND, ERROR_CODES.tire.TIRE_NOT_FOUND);
+  }
+}
+
+export class TireChangeNotFoundException extends AppException {
+  constructor() {
+    super(HttpStatus.NOT_FOUND, ERROR_CODES.tire.TIRE_CHANGE_NOT_FOUND);
+  }
+}

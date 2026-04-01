@@ -68,4 +68,9 @@ export const ERROR_CODES = {
   timeline: {
     TIMELINE_EVENT_NOT_FOUND: 'TIMELINE_EVENT_NOT_FOUND',
   },
+
+  tire: {
+    TIRE_NOT_FOUND: 'TIRE_NOT_FOUND',
+    TIRE_CHANGE_NOT_FOUND: 'TIRE_CHANGE_NOT_FOUND',
+  },
 } as const;

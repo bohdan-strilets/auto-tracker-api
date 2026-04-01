@@ -18,6 +18,8 @@ export class TimelineRepository {
     serviceLogs: true,
     documents: true,
     expenses: true,
+    tireChanges: true,
+    trips: true,
   } satisfies Prisma.TimelineEventInclude;
 
   // ──────────────────────────────────────────────────────────────
