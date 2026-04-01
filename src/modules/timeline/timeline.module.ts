@@ -6,6 +6,7 @@ import { TireModule } from '@modules/tire/tire.module';
 import { VehicleModule } from '@modules/vehicle/vehicle.module';
 import { WorkspaceModule } from '@modules/workspace/workspace.module';
 
+import { DocumentController, DocumentService } from './events/document';
 import { ExpenseController, ExpenseService } from './events/expense';
 import { FuelLogController, FuelLogService } from './events/fuel-log';
 import { MileageLogModule } from './events/mileage-log';
@@ -31,6 +32,7 @@ import { TimelineService } from './timeline.service';
     PurchaseController,
     SaleController,
     TireChangeController,
+    DocumentController,
   ],
   providers: [
     TimelineService,
@@ -42,6 +44,7 @@ import { TimelineService } from './timeline.service';
     SaleService,
     TireChangeService,
     TireChangeRepository,
+    DocumentService,
   ],
   exports: [TimelineService],
 })
