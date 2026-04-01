@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import { Currency, TimelineEventType } from '@prisma/client';
 
-import { FuelLogResponseDto } from '@modules/fuel-log/dto';
+import { FuelLogResponseDto } from '../events/fuel-log/dto';
 
 export class TimelineEventResponseDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })

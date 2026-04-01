@@ -3,7 +3,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { FuelType } from '@prisma/client';
 import { IsEnum, IsNumber, IsOptional, IsString, MaxLength, Min } from 'class-validator';
 
-import { BaseEventDto } from '../../timeline/dto/base-event.dto';
+import { BaseEventDto } from '@modules/timeline/dto';
 
 export class CreateFuelLogDto extends BaseEventDto {
   @ApiProperty({ example: 45.5 })
