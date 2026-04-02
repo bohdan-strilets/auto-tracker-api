@@ -97,6 +97,18 @@ export class VehicleRepository {
     return { data, total };
   }
 
+  async existsForUser(vehicleId: string, userId: string): Promise<boolean> {
+    const vehicle = await this.prisma.vehicle.findFirst({
+      where: {
+        id: vehicleId,
+        deletedAt: null,
+        workspace: { workspaceMembers: { some: { userId } } },
+      },
+      select: { id: true },
+    });
+    return vehicle !== null;
+  }
+
   async update(
     vehicleId: string,
     data: Prisma.VehicleUpdateInput,

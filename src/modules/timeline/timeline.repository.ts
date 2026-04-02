@@ -66,6 +66,20 @@ export class TimelineRepository {
     });
   }
 
+  async existsForUser(eventId: string, userId: string): Promise<boolean> {
+    const event = await this.prisma.timelineEvent.findFirst({
+      where: {
+        id: eventId,
+        vehicle: {
+          deletedAt: null,
+          workspace: { workspaceMembers: { some: { userId } } },
+        },
+      },
+      select: { id: true },
+    });
+    return event !== null;
+  }
+
   async create(
     data: Prisma.TimelineEventCreateInput,
     tx?: Prisma.TransactionClient,

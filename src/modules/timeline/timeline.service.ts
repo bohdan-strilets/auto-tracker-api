@@ -68,6 +68,10 @@ export class TimelineService {
     return event;
   }
 
+  async existsForUser(eventId: string, userId: string): Promise<boolean> {
+    return this.repository.existsForUser(eventId, userId);
+  }
+
   async delete(eventId: string): Promise<void> {
     await this.getOne(eventId);
     await this.repository.delete(eventId);

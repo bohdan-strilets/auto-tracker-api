@@ -3,6 +3,9 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@db/prisma.service';
 import { EntityType, Media } from '@prisma/client';
 
+import { TimelineService } from '@modules/timeline/timeline.service';
+import { VehicleService } from '@modules/vehicle/vehicle.service';
+
 import { CloudinaryService } from '@common/cloudinary/cloudinary.service';
 import {
   InvalidFileTypeException,
@@ -21,6 +24,8 @@ export class MediaService {
     private readonly mediaRepository: MediaRepository,
     private readonly cloudinaryService: CloudinaryService,
     private readonly prisma: PrismaService,
+    private readonly vehicleService: VehicleService,
+    private readonly timelineService: TimelineService,
   ) {}
 
   async upload(
@@ -31,6 +36,8 @@ export class MediaService {
     if (!ALLOWED_MIME_TYPES.includes(file.mimetype as AllowedMimeType)) {
       throw new InvalidFileTypeException();
     }
+
+    await this.verifyEntityOwnership(dto.entityType, dto.entityId, userId);
 
     const folder = `autotracker/${userId}/${ENTITY_TYPE_SUBFOLDERS[dto.entityType]}/${dto.entityId}`;
     const mediaType = MIME_TO_MEDIA_TYPE[file.mimetype];
@@ -81,6 +88,32 @@ export class MediaService {
 
     await this.cloudinaryService.deleteFile(media.storageKey);
     await this.mediaRepository.delete(mediaId);
+  }
+
+  private async verifyEntityOwnership(
+    entityType: EntityType,
+    entityId: string,
+    userId: string,
+  ): Promise<void> {
+    switch (entityType) {
+      case EntityType.USER_AVATAR:
+      case EntityType.USER_COVER:
+        if (entityId !== userId) throw new MediaOwnershipException();
+        break;
+
+      case EntityType.CAR_GALLERY: {
+        const exists = await this.vehicleService.existsForUser(entityId, userId);
+        if (!exists) throw new MediaOwnershipException();
+        break;
+      }
+
+      case EntityType.DOCUMENT_FILE:
+      case EntityType.RECEIPT_IMAGE: {
+        const exists = await this.timelineService.existsForUser(entityId, userId);
+        if (!exists) throw new MediaOwnershipException();
+        break;
+      }
+    }
   }
 
   private attachUrls(media: Media): MediaWithUrls {

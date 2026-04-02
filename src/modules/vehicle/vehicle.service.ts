@@ -68,6 +68,10 @@ export class VehicleService {
     await this.vehicleRepository.update(vehicleId, input, tx);
   }
 
+  async existsForUser(vehicleId: string, userId: string): Promise<boolean> {
+    return this.vehicleRepository.existsForUser(vehicleId, userId);
+  }
+
   async delete(vehicleId: string, workspaceId: string): Promise<void> {
     await this.getOne(vehicleId, workspaceId);
     await this.vehicleRepository.softDelete(vehicleId);
