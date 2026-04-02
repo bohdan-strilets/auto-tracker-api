@@ -21,10 +21,10 @@ export class TireChangeService {
     workspaceId: string,
     dto: CreateTireChangeDto,
   ): Promise<TimelineEvent> {
-    await this.tireService.findById(dto.installTireId);
+    await this.tireService.getOne(dto.installTireId, vehicleId, workspaceId);
 
     if (dto.removeTireId) {
-      await this.tireService.findById(dto.removeTireId);
+      await this.tireService.getOne(dto.removeTireId, vehicleId, workspaceId);
     }
 
     return this.timelineService.createEvent(
