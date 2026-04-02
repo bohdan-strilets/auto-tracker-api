@@ -40,8 +40,12 @@ export class TireController {
   @ApiOperation({ summary: 'Add tire to vehicle (Admin/Owner only)' })
   @ApiOkResponse({ type: TireResponseDto })
   @ApiCreateTireResponse()
-  create(@Param('vehicleId', ParseUUIDPipe) vehicleId: string, @Body() dto: CreateTireDto) {
-    return this.tireService.create(vehicleId, dto);
+  create(
+    @Param('workspaceId', ParseUUIDPipe) workspaceId: string,
+    @Param('vehicleId', ParseUUIDPipe) vehicleId: string,
+    @Body() dto: CreateTireDto,
+  ) {
+    return this.tireService.create(vehicleId, workspaceId, dto);
   }
 
   @Get()
@@ -49,8 +53,11 @@ export class TireController {
   @ApiOperation({ summary: 'List vehicle tires' })
   @ApiOkResponse({ type: [TireResponseDto] })
   @ApiGetTiresResponse()
-  findAll(@Param('vehicleId', ParseUUIDPipe) vehicleId: string) {
-    return this.tireService.findAll(vehicleId);
+  findAll(
+    @Param('workspaceId', ParseUUIDPipe) workspaceId: string,
+    @Param('vehicleId', ParseUUIDPipe) vehicleId: string,
+  ) {
+    return this.tireService.findAll(vehicleId, workspaceId);
   }
 
   @Patch(':tireId')
@@ -59,11 +66,12 @@ export class TireController {
   @ApiOkResponse({ type: TireResponseDto })
   @ApiUpdateTireResponse()
   update(
+    @Param('workspaceId', ParseUUIDPipe) workspaceId: string,
     @Param('vehicleId', ParseUUIDPipe) vehicleId: string,
     @Param('tireId', ParseUUIDPipe) tireId: string,
     @Body() dto: UpdateTireDto,
   ) {
-    return this.tireService.update(tireId, vehicleId, dto);
+    return this.tireService.update(tireId, vehicleId, workspaceId, dto);
   }
 
   @Delete(':tireId')
@@ -73,9 +81,10 @@ export class TireController {
   @ApiNoContentResponse({ description: 'Tire deleted' })
   @ApiDeleteTireResponse()
   async delete(
+    @Param('workspaceId', ParseUUIDPipe) workspaceId: string,
     @Param('vehicleId', ParseUUIDPipe) vehicleId: string,
     @Param('tireId', ParseUUIDPipe) tireId: string,
   ) {
-    await this.tireService.delete(tireId, vehicleId);
+    await this.tireService.delete(tireId, vehicleId, workspaceId);
   }
 }
