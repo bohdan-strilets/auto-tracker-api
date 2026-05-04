@@ -192,6 +192,20 @@ enum MaintenanceIntervalsType {
   CUSTOM
 }
 
+enum BodyType {
+  SEDAN
+  HATCHBACK
+  WAGON
+  SUV
+  CROSSOVER
+  COUPE
+  CONVERTIBLE
+  MINIVAN
+  PICKUP
+  VAN
+  OTHER
+}
+
 // Media enums
 
 enum MediaType {
@@ -441,6 +455,7 @@ model Vehicle {
   vin                  String?                @unique
   plateNumber          String?                @unique
   engineName           String?
+  bodyType             BodyType?
   fuelType             FuelType[]
   transmission         Transmission
   driveType            DriveType
