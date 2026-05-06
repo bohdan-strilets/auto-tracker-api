@@ -44,7 +44,7 @@ export class TimelineRepository {
       client.timelineEvent.findMany({
         where,
         include: this.includes,
-        orderBy: { eventDate: sortOrder },
+        orderBy: [{ eventDate: sortOrder }, { createdAt: sortOrder }],
         skip,
         take: limit,
       }),
