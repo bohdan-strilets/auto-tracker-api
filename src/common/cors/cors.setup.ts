@@ -1,13 +1,13 @@
 import { INestApplication } from '@nestjs/common';
 
-import helmet from 'helmet';
-
 import { ConfigService } from '@config/config.service';
 
 export const corsSetup = (app: INestApplication, config: ConfigService): void => {
-  app.use(helmet());
+  const origins = [config.frontendUrl, config.frontendUrlLocal];
+  const filteredOrigins = origins.filter((url): url is string => Boolean(url));
+
   app.enableCors({
-    origin: config.frontendUrl,
+    origin: filteredOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   });

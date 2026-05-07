@@ -2,6 +2,7 @@ import z from 'zod';
 
 export const envSchema = z.object({
   PORT: z.coerce.number().default(3000),
+  HOST: z.string().default('0.0.0.0'),
   NODE_ENV: z.enum(['development', 'production', 'test']),
 
   DATABASE_URL: z.url(),
@@ -37,4 +38,5 @@ export const envSchema = z.object({
   CLOUDINARY_API_SECRET: z.string().min(1).max(255),
 
   FRONTEND_URL: z.url(),
+  FRONTEND_URL_LOCAL: z.url().optional(),
 });

@@ -2,6 +2,7 @@ import { Logger } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 
 import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 
 import { JwtAuthGuard } from '@common/auth/guards';
 import { corsSetup } from '@common/cors/cors.setup';
@@ -20,6 +21,8 @@ async function bootstrap(): Promise<void> {
   const logger = new Logger('Bootstrap');
 
   const port = config.port;
+  const host = config.host;
+
   const nodeEnv = config.nodeEnv;
   const isProduction = config.isProduction;
 
@@ -31,14 +34,16 @@ async function bootstrap(): Promise<void> {
     setupSwagger(app);
   }
 
+  app.use(helmet());
+
   app.useGlobalFilters(new GlobalExceptionFilter());
   app.useGlobalPipes(createValidationPipe());
   app.use(cookieParser());
 
   app.useGlobalGuards(new JwtAuthGuard(reflector));
 
-  await app.listen(port);
+  await app.listen(port, host);
 
-  logger.verbose(`Server is running on port ${port} in ${nodeEnv} environment`);
+  logger.verbose(`Server is running on ${host}:${port} in ${nodeEnv} environment`);
 }
 void bootstrap();

@@ -15,6 +15,9 @@ export class ConfigService {
   get port(): number {
     return this.env.PORT;
   }
+  get host(): string {
+    return this.env.HOST;
+  }
   get nodeEnv(): string {
     return this.env.NODE_ENV;
   }
@@ -113,5 +116,8 @@ export class ConfigService {
   // CORS
   get frontendUrl(): string {
     return this.env.FRONTEND_URL;
+  }
+  get frontendUrlLocal(): string | undefined {
+    return this.env.FRONTEND_URL_LOCAL;
   }
 }
